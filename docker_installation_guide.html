@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker en Windows - Instalación y Primeros Pasos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0078d4 0%, #004578 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.8em;
+            margin-bottom: 15px;
+        }
+
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.3em;
+        }
+
+        .windows-logo {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .section h2 {
+            color: #0078d4;
+            font-size: 2em;
+            margin-bottom: 25px;
+            border-left: 5px solid #0078d4;
+            padding-left: 15px;
+        }
+
+        .section h3 {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        .section p {
+            color: #555;
+            line-height: 1.8;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+
+        .section ul {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        .section li {
+            color: #555;
+            line-height: 1.8;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+
+        .step-card {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #0078d4;
+            transition: transform 0.3s;
+        }
+
+        .step-card:hover {
+            transform: translateX(10px);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #0078d4;
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 45px;
+            font-weight: bold;
+            font-size: 1.4em;
+            margin-right: 15px;
+        }
+
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 25px;
+            border-radius: 12px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 1.05em;
+            overflow-x: auto;
+            margin: 20px 0;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .code-block::before {
+            content: attr(data-label);
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: #0078d4;
+            color: white;
+            padding: 6px 18px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .code-line {
+            margin: 8px 0;
+        }
+
+        .prompt {
+            color: #4ec9b0;
+        }
+
+        .comment {
+            color: #6a9955;
+        }
+
+        .output {
+            color: #ce9178;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%);
+            border-left: 5px solid #ffc107;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+
+        .warning-box::before {
+            content: "⚠️ ";
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-left: 5px solid #28a745;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+
+        .success-box::before {
+            content: "✅ ";
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            border-left: 5px solid #17a2b8;
+            padding: 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+
+        .info-box::before {
+            content: "ℹ️ ";
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .command-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .command-card {
+            background: white;
+            border: 2px solid #0078d4;
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .command-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 120, 212, 0.3);
+            background: #f0f8ff;
+        }
+
+        .command-card h4 {
+            color: #0078d4;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+        }
+
+        .command-card code {
+            background: #f5f5f5;
+            padding: 10px 14px;
+            border-radius: 6px;
+            display: block;
+            margin: 12px 0;
+            color: #2c3e50;
+            font-family: 'Consolas', monospace;
+            font-size: 0.95em;
+        }
+
+        .command-card p {
+            color: #666;
+            font-size: 0.95em;
+            margin-top: 10px;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #0078d4 0%, #004578 100%);
+            color: white;
+            padding: 18px 45px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 1.15em;
+            font-weight: bold;
+            margin: 15px 0;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 120, 212, 0.4);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 120, 212, 0.6);
+        }
+
+        .screenshot-placeholder {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            border: 2px dashed #999;
+            border-radius: 12px;
+            padding: 60px;
+            text-align: center;
+            color: #666;
+            font-size: 1.1em;
+            margin: 20px 0;
+        }
+
+        .requirements-list {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+
+        .requirements-list h4 {
+            color: #0078d4;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .requirements-list ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .requirements-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .requirements-list li:last-child {
+            border-bottom: none;
+        }
+
+        .requirements-list li::before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            margin-right: 12px;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .section {
+                padding: 25px;
+            }
+
+            .command-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="windows-logo">🪟</div>
+            <h1>Docker en Windows</h1>
+            <p class="subtitle">Guía completa de instalación y primeros pasos</p>
+        </div>
+
+        <!-- Requisitos Previos -->
+        <div class="section">
+            <h2>📋 Requisitos del Sistema</h2>
+            
+            <div class="requirements-list">
+                <h4>Requisitos Mínimos:</h4>
+                <ul>
+                    <li>Windows 10 versión 2004 o superior (Build 19041 o superior)</li>
+                    <li>Windows 11 cualquier versión</li>
+                    <li>Procesador de 64 bits con soporte para virtualización</li>
+                    <li>4 GB de RAM (recomendado 8 GB)</li>
+                    <li>Virtualización habilitada en BIOS/UEFI</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <strong>Importante:</strong> Docker Desktop requiere Windows 10/11 Pro, Enterprise o Education para usar Hyper-V. Sin embargo, WSL 2 funciona en todas las ediciones de Windows 10/11, incluida Home.
+            </div>
+
+            <div class="info-box">
+                <strong>¿Cómo verificar mi versión de Windows?</strong><br>
+                Presiona <kbd>Win + R</kbd>, escribe <code>winver</code> y presiona Enter.
+            </div>
+        </div>
+
+        <!-- Instalación Paso a Paso -->
+        <div class="section">
+            <h2>🚀 Instalación de Docker Desktop</h2>
+            
+            <div class="step-card">
+                <span class="step-number">1</span>
+                <strong>Habilitar WSL 2 (Windows Subsystem for Linux)</strong>
+            </div>
+            
+            <p>Abre PowerShell como Administrador (clic derecho en el botón de inicio → Windows PowerShell (Administrador)) y ejecuta:</p>
+            
+            <div class="code-block" data-label="PowerShell (Administrador)">
+                <div class="code-line"><span class="prompt">PS C:\Windows\system32></span> wsl --install</div>
+            </div>
+
+            <div class="info-box">
+                Este comando instalará automáticamente:<br>
+                • WSL 2<br>
+                • Ubuntu (distribución de Linux predeterminada)<br>
+                • Todos los componentes necesarios
+            </div>
+
+            <div class="warning-box">
+                <strong>⚠️ Reinicio requerido:</strong> Después de ejecutar este comando, debes reiniciar tu computadora.
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">2</span>
+                <strong>Verificar que WSL 2 está activo</strong>
+            </div>
+
+            <p>Después de reiniciar, abre PowerShell nuevamente y verifica:</p>
+
+            <div class="code-block" data-label="PowerShell">
+                <div class="code-line"><span class="prompt">PS></span> wsl --list --verbose</div>
+                <div class="code-line output">  NAME      STATE           VERSION</div>
+                <div class="code-line output">* Ubuntu    Running         2</div>
+            </div>
+
+            <div class="success-box">
+                Si ves "VERSION 2", ¡WSL 2 está correctamente instalado!
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">3</span>
+                <strong>Descargar Docker Desktop</strong>
+            </div>
+
+            <p>Descarga el instalador oficial desde el sitio de Docker:</p>
+            
+            <div style="text-align: center;">
+                <a href="https://www.docker.com/products/docker-desktop" class="download-btn" target="_blank">
+                    📥 Descargar Docker Desktop para Windows
+                </a>
+            </div>
+
+            <div class="info-box">
+                El archivo se llamará algo como: <code>Docker Desktop Installer.exe</code> (aproximadamente 500 MB)
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">4</span>
+                <strong>Instalar Docker Desktop</strong>
+            </div>
+
+            <p><strong>a)</strong> Ejecuta el instalador descargado (doble clic en Docker Desktop Installer.exe)</p>
+            
+            <p><strong>b)</strong> En la ventana de configuración, <strong>asegúrate de marcar</strong>:</p>
+            <ul>
+                <li>✅ "Use WSL 2 instead of Hyper-V" (recomendado)</li>
+                <li>✅ "Add shortcut to desktop" (opcional)</li>
+            </ul>
+
+            <div class="screenshot-placeholder">
+                💡 La instalación mostrará una ventana con estas opciones marcadas
+            </div>
+
+            <p><strong>c)</strong> Haz clic en "OK" para continuar</p>
+            
+            <p><strong>d)</strong> Espera a que se complete la instalación (puede tomar 5-10 minutos)</p>
+
+            <div class="warning-box">
+                <strong>Reinicio requerido:</strong> Al finalizar la instalación, se te pedirá reiniciar nuevamente tu computadora.
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">5</span>
+                <strong>Iniciar Docker Desktop</strong>
+            </div>
+
+            <p>Después del reinicio:</p>
+            <ul>
+                <li>Busca "Docker Desktop" en el menú de inicio</li>
+                <li>Ejecuta la aplicación</li>
+                <li>Acepta los términos de servicio si aparecen</li>
+                <li>Espera a que Docker se inicie completamente</li>
+            </ul>
+
+            <div class="info-box">
+                Verás un ícono de ballena (🐳) en la bandeja del sistema (esquina inferior derecha). Cuando Docker esté listo, la ballena dejará de animarse.
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">6</span>
+                <strong>Verificar la instalación</strong>
+            </div>
+
+            <p>Abre PowerShell o CMD y ejecuta:</p>
+
+            <div class="code-block" data-label="PowerShell o CMD">
+                <div class="code-line"><span class="prompt">PS></span> docker --version</div>
+                <div class="code-line output">Docker version 24.0.7, build afdd53b</div>
+                <div class="code-line"><br></div>
+                <div class="code-line"><span class="prompt">PS></span> docker run hello-world</div>
+                <div class="code-line output"><br>Hello from Docker!</div>
+                <div class="code-line output">This message shows that your installation appears to be working correctly.</div>
+            </div>
+
+            <div class="success-box">
+                <strong>¡Felicidades! 🎉</strong><br>
+                Si ves el mensaje "Hello from Docker!", la instalación fue exitosa y Docker está funcionando correctamente.
+            </div>
+        </div>
+
+        <!-- Configuración Inicial -->
+        <div class="section">
+            <h2>⚙️ Configuración Inicial Recomendada</h2>
+
+            <h3>Asignar Recursos a Docker</h3>
+            <p>Docker Desktop permite configurar cuántos recursos utilizar:</p>
+            
+            <ol>
+                <li>Abre Docker Desktop</li>
+                <li>Ve a Settings (ícono de engranaje ⚙️)</li>
+                <li>Selecciona "Resources" en el menú lateral</li>
+                <li>Ajusta los recursos según tu sistema:</li>
+            </ol>
+
+            <div class="info-box">
+                <strong>Configuración recomendada:</strong><br>
+                • <strong>CPUs:</strong> La mitad de tus cores (ej: si tienes 8, asigna 4)<br>
+                • <strong>Memory:</strong> La mitad de tu RAM (ej: si tienes 16GB, asigna 8GB)<br>
+                • <strong>Swap:</strong> 2-4 GB<br>
+                • <strong>Disk size:</strong> 60-100 GB
+            </div>
+
+            <h3>Habilitar Integración con WSL</h3>
+            <ol>
+                <li>En Docker Desktop, ve a Settings → Resources → WSL Integration</li>
+                <li>Activa "Enable integration with my default WSL distro"</li>
+                <li>Activa las distribuciones específicas que uses (Ubuntu, etc.)</li>
+                <li>Haz clic en "Apply & Restart"</li>
+            </ol>
+
+            <div class="success-box">
+                Esto te permitirá usar Docker desde la terminal de Ubuntu dentro de Windows.
+            </div>
+        </div>
+
+        <!-- Primeros Pasos -->
+        <div class="section">
+            <h2>🎯 Primeros Pasos: Comandos Esenciales</h2>
+
+            <h3>Comandos Básicos para Empezar</h3>
+
+            <div class="command-grid">
+                <div class="command-card">
+                    <h4>Ver versión</h4>
+                    <code>docker --version</code>
+                    <p>Muestra la versión instalada de Docker</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Información del sistema</h4>
+                    <code>docker info</code>
+                    <p>Información detallada de tu instalación</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Listar imágenes</h4>
+                    <code>docker images</code>
+                    <p>Muestra todas las imágenes descargadas</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Buscar imágenes</h4>
+                    <code>docker search nginx</code>
+                    <p>Busca imágenes en Docker Hub</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Descargar imagen</h4>
+                    <code>docker pull nginx</code>
+                    <p>Descarga una imagen desde Docker Hub</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Ver contenedores activos</h4>
+                    <code>docker ps</code>
+                    <p>Lista contenedores en ejecución</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Ver todos los contenedores</h4>
+                    <code>docker ps -a</code>
+                    <p>Incluye contenedores detenidos</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Ejecutar contenedor</h4>
+                    <code>docker run nginx</code>
+                    <p>Crea y ejecuta un contenedor</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Ejecutar en background</h4>
+                    <code>docker run -d nginx</code>
+                    <p>Ejecuta en segundo plano</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Mapear puertos</h4>
+                    <code>docker run -p 8080:80 nginx</code>
+                    <p>Puerto 8080 local → puerto 80 contenedor</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Nombrar contenedor</h4>
+                    <code>docker run --name web nginx</code>
+                    <p>Asigna un nombre personalizado</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Detener contenedor</h4>
+                    <code>docker stop CONTAINER_ID</code>
+                    <p>Detiene un contenedor en ejecución</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Eliminar contenedor</h4>
+                    <code>docker rm CONTAINER_ID</code>
+                    <p>Borra un contenedor detenido</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Ver logs</h4>
+                    <code>docker logs CONTAINER_ID</code>
+                    <p>Muestra los logs del contenedor</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Acceder al contenedor</h4>
+                    <code>docker exec -it CONTAINER_ID bash</code>
+                    <p>Abre una terminal dentro del contenedor</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Limpiar recursos</h4>
+                    <code>docker system prune -a</code>
+                    <p>Elimina contenedores e imágenes sin usar</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ejercicio Práctico -->
+        <div class="section">
+            <h2>🚀 Ejercicio Práctico: Tu Primer Servidor Web</h2>
+            
+            <div class="step-card">
+                <span class="step-number">1</span>
+                <strong>Ejecutar un servidor web Nginx</strong>
+            </div>
+
+            <p>Abre PowerShell o CMD y ejecuta:</p>
+
+            <div class="code-block" data-label="PowerShell">
+                <div class="code-line"><span class="prompt">PS></span> docker run -d -p 8080:80 --name mi-primer-web nginx</div>
+                <div class="code-line output">Unable to find image 'nginx:latest' locally</div>
+                <div class="code-line output">latest: Pulling from library/nginx</div>
+                <div class="code-line output">...</div>
+                <div class="code-line output">Status: Downloaded newer image for nginx:latest</div>
+                <div class="code-line output">a3f8d9e7c6b5d4e3f2a1b0c9d8e7f6a5b4c3d2e1</div>
+            </div>
+
+            <div class="info-box">
+                <strong>Explicación del comando:</strong><br>
+                • <code>docker run</code>: Ejecuta un contenedor<br>
+                • <code>-d</code>: Modo detached (segundo plano)<br>
+                • <code>-p 8080:80</code>: Mapea el puerto 8080 de Windows al puerto 80 del contenedor<br>
+                • <code>--name mi-primer-web</code>: Nombre personalizado para el contenedor<br>
+                • <code>nginx</code>: Imagen a usar
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">2</span>
+                <strong>Verificar que está corriendo</strong>
+            </div>
+
+            <div class="code-block" data-label="PowerShell">
+                <div class="code-line"><span class="prompt">PS></span> docker ps</div>
+                <div class="code-line output">CONTAINER ID   IMAGE   COMMAND                  STATUS         PORTS                  NAMES</div>
+                <div class="code-line output">a3f8d9e7c6b5   nginx   "/docker-entrypoint.…"   Up 2 minutes   0.0.0.0:8080->80/tcp   mi-primer-web</div>
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">3</span>
+                <strong>Probar en el navegador</strong>
+            </div>
+
+            <div class="success-box">
+                <strong>¡Abre tu navegador y visita:</strong><br>
+                <code>http://localhost:8080</code><br><br>
+                Deberías ver la página de bienvenida de Nginx: <strong>"Welcome to nginx!"</strong> 🎉
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">4</span>
+                <strong>Ver los logs del contenedor</strong>
+            </div>
+
+            <div class="code-block" data-label="PowerShell">
+                <div class="code-line"><span class="prompt">PS></span> docker logs mi-primer-web</div>
+                <div class="code-line output">/docker-entrypoint.sh: /docker-entrypoint.d/ is not empty...</div>
+                <div class="code-line output">...</div>
+                <div class="code-line output">nginx: configuration file /etc/nginx/nginx.conf test is successful</div>
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">5</span>
+                <strong>Detener y eliminar el contenedor</strong>
+            </div>
+
+            <div class="code-block" data-label="PowerShell">
+                <div class="code-line"><span class="prompt">PS></span> docker stop mi-primer-web</div>
+                <div class="code-line output">mi-primer-web</div>
+                <div class="code-line"><br></div>
+                <div class="code-line"><span class="prompt">PS></span> docker rm mi-primer-web</div>
+                <div class="code-line output">mi-primer-web</div>
+            </div>
+
+            <div class="info-box">
+                <strong>Atajo:</strong> Puedes detener y eliminar en un solo comando:<br>
+                <code>docker rm -f mi-primer-web</code>
+            </div>
+        </div>
+
+        <!-- Solución de Problemas -->
+        <div class="section">
+            <h2>🔧 Solución de Problemas Comunes</h2>
+
+            <h3>Error: "WSL 2 installation is incomplete"</h3>
+            <div class="info-box">
+                <strong>Solución:</strong><br>
+                1. Descarga el paquete de actualización de WSL 2 desde:<br>
+                <a href="https://aka.ms/wsl2kernel" target="_blank">https://aka.ms/wsl2kernel</a><br>
+                2. Instálalo y reinicia Docker Desktop
+            </div>
+
+            <h3>Error: "Docker Desktop requires Windows 10 Pro/Enterprise"</h3>
+            <div class="info-box">
+                <strong>Solución:</strong><br>
+                Si tienes Windows 10/11 Home, asegúrate de usar WSL 2 en lugar de Hyper-V durante la instalación. WSL 2 funciona en todas las ediciones.
+            </div>
+
+            <h3>Docker Desktop no inicia</h3>
+            <div class="info-box">
+                <strong>Solución:</strong><br>
+                1. Verifica que la virtualización esté habilitada en BIOS<br>
+                2. Ejecuta como administrador: <code>wsl --update</code><br>
+                3. Reinicia tu computadora<br>
+                4. Reinicia Docker Desktop
+            </div>
+
+            <h3>Puerto ya en uso</h3>
+            <div class="info-box">
+                <strong>Solución:</strong><br>
+                Si el puerto 8080 está ocupado, usa otro puerto:<br>
+                <code>docker run -d -p 9090:80 --name mi-web nginx</code><br>
+                Luego accede con: <code>http://localhost:9090</code>
+            </div>
+        </div>
+
+        <!-- Próximos Pasos -->
+        <div class="section">
+            <h2>🎓 Próximos Pasos</h2>
+            
+            <div class="info-box">
+                <strong>Ahora que tienes Docker funcionando, puedes:</strong><br><br>
+                ✅ Explorar Docker Hub para encontrar imágenes<br>
+                ✅ Aprender a crear tus propias imágenes con Dockerfile<br>
+                ✅ Trabajar con volúmenes para persistir datos<br>
+                ✅ Usar Docker Compose para aplicaciones multi-contenedor<br>
+                ✅ Integrar Docker en tu flujo de desarrollo
+            </div>
+
+            <div class="success-box">
+                <strong>¡Felicidades! 🎉</strong><br>
+                Has instalado Docker correctamente y ejecutado tu primer contenedor. Estás listo
