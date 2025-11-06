@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker en macOS - Instalación y Primeros Pasos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #111827 0%, #1d4ed8 40%, #3b82f6 100%);
+            color: #ffffff;
+            padding: 40px 35px;
+            text-align: left;
+            position: relative;
+        }
+
+        .mac-logo {
+            font-size: 2.6em;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 2.4em;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .section {
+            padding: 35px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .section h2 {
+            font-size: 1.8em;
+            color: #1f2933;
+            margin-bottom: 15px;
+        }
+
+        .section h3 {
+            font-size: 1.3em;
+            color: #1f2933;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .section p {
+            color: #444;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        .section ul {
+            margin-left: 25px;
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        .section li {
+            margin-bottom: 6px;
+        }
+
+        .requirements-list {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px 22px;
+            margin-bottom: 18px;
+        }
+
+        .requirements-list h4 {
+            margin-bottom: 8px;
+            color: #111827;
+        }
+
+        .warning-box,
+        .success-box,
+        .info-box {
+            border-radius: 12px;
+            padding: 20px 22px;
+            margin: 15px 0;
+        }
+
+        .warning-box {
+            background: #fef3c7;
+            border-left: 5px solid #f59e0b;
+        }
+
+        .success-box {
+            background: #dcfce7;
+            border-left: 5px solid #22c55e;
+        }
+
+        .info-box {
+            background: #e0f2fe;
+            border-left: 5px solid #0284c7;
+        }
+
+        .step-card {
+            display: flex;
+            align-items: center;
+            margin: 20px 0 10px 0;
+        }
+
+        .step-number {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #1d4ed8;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+
+        .code-block {
+            background: #111827;
+            color: #e5e7eb;
+            padding: 18px 20px;
+            border-radius: 12px;
+            font-family: "Consolas", "Courier New", monospace;
+            font-size: 0.98em;
+            overflow-x: auto;
+            margin: 18px 0;
+            position: relative;
+        }
+
+        .code-block::before {
+            content: attr(data-label);
+            position: absolute;
+            top: -15px;
+            left: 18px;
+            background: #1d4ed8;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 0.8em;
+        }
+
+        .code-line {
+            margin: 4px 0;
+        }
+
+        .prompt {
+            color: #22c55e;
+        }
+
+        .output {
+            color: #facc15;
+        }
+
+        .command-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0,1fr));
+            gap: 18px;
+            margin-top: 12px;
+        }
+
+        .command-card {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 12px 14px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .command-card h4 {
+            margin-bottom: 6px;
+            font-size: 1em;
+            color: #111827;
+        }
+
+        .command-card code {
+            display: block;
+            background: #111827;
+            color: #e5e7eb;
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-family: "Consolas", monospace;
+            font-size: 0.9em;
+        }
+
+        .command-card p {
+            margin-top: 6px;
+            font-size: 0.9em;
+            color: #4b5563;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: #fff;
+            padding: 14px 40px;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 15px 0;
+            box-shadow: 0 10px 25px rgba(37,99,235,0.4);
+            transition: all 0.25s;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(37,99,235,0.55);
+        }
+
+        .screenshot-placeholder {
+            background: #f3f4f6;
+            border-radius: 12px;
+            padding: 16px 18px;
+            text-align: center;
+            color: #6b7280;
+            margin: 14px 0;
+            font-size: 0.95em;
+        }
+
+        .section-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                text-align: center;
+            }
+            .command-grid {
+                grid-template-columns: 1fr;
+            }
+            .section {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="mac-logo">🍎</div>
+            <h1>Docker en macOS</h1>
+            <p class="subtitle">Guía de instalación y primeros pasos</p>
+        </div>
+
+        <!-- Requisitos -->
+        <div class="section">
+            <h2>📋 Requisitos del sistema</h2>
+
+            <div class="requirements-list">
+                <h4>Requisitos mínimos recomendados</h4>
+                <ul>
+                    <li>macOS Big Sur (11) o superior (idealmente Monterey 12 o más reciente).</li>
+                    <li>Procesador Intel de 64 bits o chip Apple Silicon (M1, M2, M3, etc.).</li>
+                    <li>4 GB de RAM (recomendado 8 GB o más).</li>
+                    <li>Al menos 5 GB de espacio libre en disco.</li>
+                    <li>Permisos de administrador para instalar aplicaciones.</li>
+                </ul>
+            </div>
+
+            <div class="warning-box">
+                <strong>Nota:</strong> En equipos administrados por una empresa o universidad, es posible que
+                necesites que el área de TI apruebe o realice la instalación de Docker Desktop.
+            </div>
+        </div>
+
+        <!-- Ver tipo de chip -->
+        <div class="section">
+            <h2>🧠 Paso 1: Verificar el tipo de chip del Mac</h2>
+
+            <p>Antes de descargar Docker Desktop, es importante saber si tu Mac tiene procesador Intel o Apple Silicon.</p>
+
+            <ol>
+                <li>Haz clic en el ícono de la manzana  en la esquina superior izquierda.</li>
+                <li>Selecciona <strong>"Acerca de esta Mac"</strong>.</li>
+                <li>En la ventana que aparece, revisa el campo <strong>"Chip"</strong> o <strong>"Procesador"</strong>:
+                    <ul>
+                        <li>Si ves algo como <em>"Chip Apple M1"</em>, <em>M2</em>, <em>M3</em>, es un Mac con Apple Silicon.</li>
+                        <li>Si ves algo como <em>"Intel Core i5"</em> o similar, es un Mac con procesador Intel.</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <div class="info-box">
+                Docker ofrece instaladores separados para Mac con chip Intel y para Mac con Apple Silicon.
+                Asegúrate de descargar el adecuado.
+            </div>
+        </div>
+
+        <!-- Descarga -->
+        <div class="section">
+            <h2>⬇️ Paso 2: Descargar Docker Desktop para Mac</h2>
+
+            <p>Abre tu navegador y entra a la página oficial de Docker Desktop:</p>
+
+            <div style="text-align:center;">
+                <a href="https://www.docker.com/products/docker-desktop" target="_blank" class="download-btn">
+                    📥 Descargar Docker Desktop para Mac
+                </a>
+            </div>
+
+            <p>En la página, selecciona la versión que corresponda a tu equipo:</p>
+            <ul>
+                <li><strong>Mac with Intel chip</strong>, si tu Mac usa procesador Intel.</li>
+                <li><strong>Mac with Apple silicon</strong>, si tu Mac tiene chip M1, M2, M3, etc.</li>
+            </ul>
+
+            <div class="success-box">
+                El archivo descargado será un paquete <strong>.dmg</strong>, con un nombre similar a:
+                <code>Docker.dmg</code> o <code>Docker Desktop Installer.dmg</code>.
+            </div>
+        </div>
+
+        <!-- Instalación -->
+        <div class="section">
+            <h2>💿 Paso 3: Instalar Docker Desktop en macOS</h2>
+
+            <div class="step-card">
+                <span class="step-number">1</span>
+                <strong>Abrir el archivo .dmg</strong>
+            </div>
+
+            <p>Busca el archivo descargado (en la carpeta Descargas) y haz doble clic para abrirlo.</p>
+
+            <div class="screenshot-placeholder">
+                Se abrirá una ventana con el ícono de Docker y la carpeta "Applications".
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">2</span>
+                <strong>Arrastrar Docker a Applications</strong>
+            </div>
+
+            <p>Arrastra el ícono de <strong>Docker.app</strong> hacia el ícono de <strong>Applications</strong>.</p>
+
+            <div class="step-card">
+                <span class="step-number">3</span>
+                <strong>Ejecutar Docker por primera vez</strong>
+            </div>
+
+            <p>
+                Abre la carpeta <strong>Applications</strong>, busca <strong>Docker</strong> y haz doble clic.
+                Es posible que macOS muestre un aviso para confirmar que quieres abrir una app descargada de internet.
+            </p>
+
+            <div class="warning-box">
+                La primera vez, macOS puede pedir tu contraseña de administrador y mostrar ventanas de permisos adicionales.
+                Acepta estos permisos para que Docker Desktop pueda funcionar correctamente.
+            </div>
+
+            <p>Después de unos segundos/minutos, deberías ver el ícono de la ballena de Docker en la barra superior (menú).</p>
+
+            <div class="success-box">
+                Cuando Docker termine de arrancar, mostrará el mensaje
+                <strong>"Docker Desktop is running"</strong>.  
+                En ese punto ya puedes usar el comando <code>docker</code> desde la Terminal.
+            </div>
+        </div>
+
+        <!-- Primer contenedor -->
+        <div class="section">
+            <h2>🐋 Paso 4: Probar Docker con <code>hello-world</code></h2>
+
+            <p>Ahora vamos a comprobar que Docker funciona correctamente ejecutando un contenedor de prueba.</p>
+
+            <div class="code-block" data-label="Terminal">
+                <div class="code-line"><span class="prompt">$</span> docker --version</div>
+                <div class="code-line output">Docker version XX.XX.X, build XXXXXXX</div>
+            </div>
+
+            <p>Si ves una versión similar, Docker está instalado. Ejecuta ahora el contenedor de prueba:</p>
+
+            <div class="code-block" data-label="Terminal">
+                <div class="code-line"><span class="prompt">$</span> docker run hello-world</div>
+            </div>
+
+            <div class="success-box">
+                Si todo sale bien, verás un mensaje indicando que Docker descargó la imagen
+                <strong>hello-world</strong> y que el contenedor se ejecutó correctamente.
+            </div>
+        </div>
+
+        <!-- Comandos básicos -->
+        <div class="section">
+            <h2>🧪 Comandos básicos de Docker</h2>
+            <p>Algunos comandos útiles para empezar:</p>
+
+            <div class="command-grid">
+                <div class="command-card">
+                    <h4>Ver imágenes descargadas</h4>
+                    <code>docker images</code>
+                    <p>Muestra las imágenes que tienes en tu máquina.</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Ver contenedores en ejecución</h4>
+                    <code>docker ps</code>
+                    <p>Lista solo los contenedores activos.</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Ver todos los contenedores</h4>
+                    <code>docker ps -a</code>
+                    <p>Incluye los que ya se detuvieron.</p>
+                </div>
+
+                <div class="command-card">
+                    <h4>Eliminar contenedor</h4>
+                    <code>docker rm NOMBRE_O_ID</code>
+                    <p>Elimina un contenedor que ya no necesites.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ejemplo Nginx -->
+        <div class="section">
+            <h2>🌐 Ejemplo rápido con Nginx</h2>
+
+            <p>Como ejemplo sencillo, vamos a levantar un servidor web Nginx en un contenedor.</p>
+
+            <div class="step-card">
+                <span class="step-number">1</span>
+                <strong>Descargar y ejecutar Nginx</strong>
+            </div>
+
+            <div class="code-block" data-label="Terminal">
+                <div class="code-line"><span class="prompt">$</span> docker run -d -p 8080:80 --name mi-web nginx</div>
+            </div>
+
+            <div class="step-card">
+                <span class="step-number">2</span>
+                <strong>Probar en el navegador</strong>
+            </div>
+
+            <div class="success-box">
+                Abre tu navegador y visita:<br>
+                <code>http://localhost:8080</code><br><br>
+                Deberías ver la página de bienvenida de Nginx:
+                <strong>"Welcome to nginx!"</strong> 🎉
+            </div>
+        </div>
+
+        <!-- Ajustar recursos -->
+        <div class="section">
+            <h2>⚙️ Ajustar recursos de Docker Desktop</h2>
+
+            <p>
+                Si notas que el Mac se vuelve lento al usar contenedores pesados, puedes ajustar
+                cuánta CPU y memoria puede usar Docker.
+            </p>
+
+            <ol>
+                <li>Abre Docker Desktop.</li>
+                <li>Haz clic en el ícono de engranaje (⚙️) para abrir <strong>Preferences</strong>.</li>
+                <li>Ve a la sección <strong>Resources</strong>.</li>
+                <li>Ajusta CPU y Memory según las capacidades de tu equipo.</li>
+            </ol>
+
+            <div class="info-box">
+                Como regla general, puedes asignar a Docker aproximadamente la mitad de la RAM y de los núcleos
+                de CPU de tu máquina, dejando el resto para el sistema y otras aplicaciones.
+            </div>
+        </div>
+
+        <!-- Próximos pasos -->
+        <div class="section">
+            <h2>🎓 Próximos pasos</h2>
+
+            <div class="info-box">
+                <strong>Ahora que Docker funciona en tu Mac, puedes:</strong><br><br>
+                ✅ Explorar imágenes en Docker Hub.<br>
+                ✅ Aprender a escribir tus propios Dockerfile.<br>
+                ✅ Practicar con volúmenes para guardar datos.<br>
+                ✅ Probar Docker Compose para aplicaciones con varios contenedores.<br>
+                ✅ Integrar Docker en tus proyectos de desarrollo.
+            </div>
+
+            <div class="success-box">
+                <strong>¡Listo! 🎉</strong><br>
+                Ya tienes Docker Desktop instalado en macOS y corriste tus primeros contenedores.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
